@@ -2,18 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Function for Algorithms
-void FIFO_algorithm(int, int);
-void LRU_algorithm(int, int);
-
-// Function for Linked list
-void print_List();
-void insert_Operation(char *);
-void delete_Node();
-void delete_Node_LRU(int);
-int search_Item(char *);
-int search_Item_LRU(char *);
-
 // defining struct for linked list
 struct Linked_List
 {
@@ -24,72 +12,6 @@ struct Linked_List
 typedef struct Linked_List node;
 node *Head = NULL;
 node *Tail = NULL;
-
-// Main fuction
-int main()
-{
-    int frames, file_name_value, algorithm_type_value;
-    int file_name = 0;
-    int algorithm_type = 0;
-
-    printf("\nPlease Select one of the file you want to perform the Page replacement algorithm on :");
-    printf("\n1. bzip.txt");
-    printf("\n2. gcc.txt");
-    printf("\n3. test.txt");
-    printf("\nEnter your choice:\t");
-    scanf("%d", &file_name);
-    switch (file_name)
-    {
-    case 1:
-        printf("\nYou selected bzip.txt");
-        file_name_value = 1;
-        break;
-    case 2:
-        printf("\nYou selected gcc.txt");
-        file_name_value = 2;
-        break;
-    case 3:
-        printf("\nYou selected test.txt");
-        file_name_value = 3;
-        break;
-    default:
-        printf("\nPlease Select correct option ");
-    }
-
-    printf("\nPlease Select the algorithm you want to perform on the file : ");
-    printf("\n1. FIFO");
-    printf("\n2. LRU");
-    printf("\nEnter your choice:\t");
-    scanf("%d", &algorithm_type);
-    switch (algorithm_type)
-    {
-    case 1:
-        printf("\nYou selected FIFO");
-        algorithm_type_value = 1;
-        break;
-    case 2:
-        printf("\nYou selected LRU");
-        algorithm_type_value = 2;
-        break;
-    default:
-        printf("\nPlease Select correct option ");
-    }
-
-    printf("\nWhat are the total number of frames:\t");
-    scanf("%d", &frames);
-
-    if (algorithm_type_value == 1)
-    {
-        FIFO_algorithm(file_name_value, frames);
-    }
-    else
-    {
-        LRU_algorithm(file_name_value, frames);
-    }
-    return 0;
-}
-
-// <------------------ FIFO Algorithms ------------------>
 
 void FIFO_algorithm(int file_number, int frame_size)
 {
@@ -169,7 +91,6 @@ void FIFO_algorithm(int file_number, int frame_size)
     fclose(fp);
 }
 
-// <------------------ LRU ------------------>
 void LRU_algorithm(int file_number, int frame_size)
 {
     char reference_string[10], operator;
@@ -253,32 +174,26 @@ void LRU_algorithm(int file_number, int frame_size)
     fclose(fp);
 }
 
-// <------------------ Linked List Functions ------------------>
-
 void insert_Operation(char *value)
 {
-    node *new_node = (node *)malloc(sizeof(node));
-    if (new_node == NULL)
-    {
-        printf("Error: Memory allocation failed.\n");
-        return;
-    }
+    node *temp_node;
+    temp_node = (node *)malloc(sizeof(node));
 
-    strcpy(new_node->Refernce_String, value);
-    new_node->next = NULL;
+    strcpy(temp_node->Refernce_String, value);
+    temp_node->next = NULL;
 
-    if (Tail == NULL) // Empty list
+    // For the 1st element
+    if (Head == NULL)
     {
-        Head = new_node;
-        Tail = new_node;
+        Head = temp_node;
+        Tail = temp_node;
     }
-    else // Non-empty list
+    else
     {
-        Tail->next = new_node;
-        Tail = new_node;
+        Tail->next = temp_node;
+        Tail = temp_node;
     }
 }
-
 
 void delete_Node_LRU(int pos)
 {
@@ -306,58 +221,142 @@ void delete_Node_LRU(int pos)
 
 void delete_Node()
 {
+    node *toDelete;
     if (Head == NULL)
     {
         printf("List is already empty.");
     }
     else
     {
-        node *toDelete = Head;
-        Head = toDelete->next;
-        free(toDelete);
+        toDelete = Head;
+        Head = Head->next;
     }
 }
-
 
 int search_Item(char *value)
 {
     node *searchNode = Head;
+    int flag = 0;
     while (searchNode != NULL)
     {
         if (strcmp(searchNode->Refernce_String, value) == 0)
         {
-            return 1;  // value found, return 1
+            flag = 1;
+            break;
         }
-        searchNode = searchNode->next;
+        else
+            searchNode = searchNode->next;
     }
-    return 0;  // value not found, return 0
+    if (flag == 0)
+    {
+    }
+    return flag;
 }
-
 
 int search_Item_LRU(char *value)
 {
     node *searchNode = Head;
     int position = -1;
+    int count = -1;
 
-    for (int count = 0; searchNode != NULL; count++, searchNode = searchNode->next)
+    while (searchNode != NULL)
     {
+        count++;
         if (strcmp(searchNode->Refernce_String, value) == 0)
         {
             position = count;
             break;
         }
+        else
+            searchNode = searchNode->next;
     }
 
     return position;
 }
 
-
 void print_List()
 {
     printf("\nContents of Page Frame are\n");
-    for (node* current = Head; current != NULL; current = current->next)
+    node *myLinkList;
+    myLinkList = Head;
+    while (myLinkList != NULL)
     {
-        printf("%s ", current->Refernce_String);
+        printf("%s ", myLinkList->Refernce_String);
+        myLinkList = myLinkList->next;
     }
-    printf("\n");
+    puts("");
 }
+
+// Main fuction
+int main()
+{
+    int frames, file_name_value, algorithm_type_value;
+    int file_name = 0;
+    int algorithm_type = 0;
+
+    printf("\nPlease Select one of the file you want to perform the Page replacement algorithm on :");
+    printf("\n1. bzip.txt");
+    printf("\n2. gcc.txt");
+    printf("\n3. test.txt");
+    printf("\nEnter your choice:\t");
+    scanf("%d", &file_name);
+    switch (file_name)
+    {
+    case 1:
+        printf("\nYou selected bzip.txt");
+        file_name_value = 1;
+        break;
+    case 2:
+        printf("\nYou selected gcc.txt");
+        file_name_value = 2;
+        break;
+    case 3:
+        printf("\nYou selected test.txt");
+        file_name_value = 3;
+        break;
+    default:
+        printf("\nPlease Select correct option ");
+    }
+
+    printf("\nPlease Select the algorithm you want to perform on the file : ");
+    printf("\n1. FIFO");
+    printf("\n2. LRU");
+    printf("\nEnter your choice:\t");
+    scanf("%d", &algorithm_type);
+    switch (algorithm_type)
+    {
+    case 1:
+        printf("\nYou selected FIFO");
+        algorithm_type_value = 1;
+        break;
+    case 2:
+        printf("\nYou selected LRU");
+        algorithm_type_value = 2;
+        break;
+    default:
+        printf("\nPlease Select correct option ");
+    }
+
+    printf("\nWhat are the total number of frames:\t");
+    scanf("%d", &frames);
+
+    if (algorithm_type_value == 1)
+    {
+        FIFO_algorithm(file_name_value, frames);
+    }
+    else
+    {
+        LRU_algorithm(file_name_value, frames);
+    }
+    return 0;
+}
+
+// <------------------ FIFO Algorithms ------------------>
+
+
+
+// <------------------ LRU ------------------>
+
+
+// <------------------ Linked List Functions ------------------>
+
