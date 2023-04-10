@@ -302,68 +302,58 @@ void delete_Node_LRU(int pos)
 
 void delete_Node()
 {
-    node *toDelete;
     if (Head == NULL)
     {
         printf("List is already empty.");
     }
     else
     {
-        toDelete = Head;
-        Head = Head->next;
+        node *toDelete = Head;
+        Head = toDelete->next;
+        free(toDelete);
     }
 }
+
 
 int search_Item(char *value)
 {
     node *searchNode = Head;
-    int flag = 0;
     while (searchNode != NULL)
     {
         if (strcmp(searchNode->Refernce_String, value) == 0)
         {
-            flag = 1;
-            break;
+            return 1;  // value found, return 1
         }
-        else
-            searchNode = searchNode->next;
+        searchNode = searchNode->next;
     }
-    if (flag == 0)
-    {
-    }
-    return flag;
+    return 0;  // value not found, return 0
 }
+
 
 int search_Item_LRU(char *value)
 {
     node *searchNode = Head;
     int position = -1;
-    int count = -1;
 
-    while (searchNode != NULL)
+    for (int count = 0; searchNode != NULL; count++, searchNode = searchNode->next)
     {
-        count++;
         if (strcmp(searchNode->Refernce_String, value) == 0)
         {
             position = count;
             break;
         }
-        else
-            searchNode = searchNode->next;
     }
 
     return position;
 }
 
+
 void print_List()
 {
     printf("\nContents of Page Frame are\n");
-    node *myLinkList;
-    myLinkList = Head;
-    while (myLinkList != NULL)
+    for (node* current = Head; current != NULL; current = current->next)
     {
-        printf("%s ", myLinkList->Refernce_String);
-        myLinkList = myLinkList->next;
+        printf("%s ", current->Refernce_String);
     }
-    puts("");
+    printf("\n");
 }
