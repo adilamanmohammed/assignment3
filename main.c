@@ -257,24 +257,28 @@ void LRU_algorithm(int file_number, int frame_size)
 
 void insert_Operation(char *value)
 {
-    node *temp_node;
-    temp_node = (node *)malloc(sizeof(node));
-
-    strcpy(temp_node->Refernce_String, value);
-    temp_node->next = NULL;
-
-    // For the 1st element
-    if (Head == NULL)
+    node *new_node = (node *)malloc(sizeof(node));
+    if (new_node == NULL)
     {
-        Head = temp_node;
-        Tail = temp_node;
+        printf("Error: Memory allocation failed.\n");
+        return;
     }
-    else
+
+    strcpy(new_node->Refernce_String, value);
+    new_node->next = NULL;
+
+    if (Tail == NULL) // Empty list
     {
-        Tail->next = temp_node;
-        Tail = temp_node;
+        Head = new_node;
+        Tail = new_node;
+    }
+    else // Non-empty list
+    {
+        Tail->next = new_node;
+        Tail = new_node;
     }
 }
+
 
 void delete_Node_LRU(int pos)
 {
